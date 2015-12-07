@@ -1849,3 +1849,33 @@ div.ql-toolbar {
     }
 }
 
+.gantt {
+    .axis {
+        path {
+            fill: none;
+        }
+
+        path, line {
+            stroke: #000;
+            stroke-width: 0.5;
+        }
+    } 
+
+    .tasks {
+        .task {
+            .task-rect {
+                fill: transparent;
+                stroke: #000;
+                stroke-width: 1px;
+            }
+        }
+    }
+
+    .chart {
+        .chart-line {
+            stroke-width: 2px;
+            stroke-dasharray: 3, 3;
+            stroke: #000;
+        }
+    }
+}
