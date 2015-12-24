@@ -73,6 +73,7 @@ var internalsPaths = [
 var externalsPath = [
     "src/Clients/Externals/ThirdPartyIP/JQuery/2.1.3/jquery.min.js",
     "src/Clients/Externals/ThirdPartyIP/D3/d3.min.js",
+    "src/Clients/Externals/ThirdPartyIP/D3/d3.plugin.boxWhisker.js",
     "src/Clients/Externals/ThirdPartyIP/LoDash/lodash.min.js",
     "src/Clients/Externals/ThirdPartyIP/GlobalizeJS/globalize.min.js",
     "src/Clients/Externals/ThirdPartyIP/GlobalizeJS/globalize.culture.en-US.js",

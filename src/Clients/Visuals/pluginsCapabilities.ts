@@ -36,6 +36,8 @@ module powerbi.visuals.capabilities {
 
     export let barChart = powerbi.visuals.getColumnChartCapabilities(true);
 
+    export let boxWhisker = powerbi.visuals.boxWhiskerCapabilities;
+
     export let card = powerbi.visuals.cardCapabilities;
 
     export let multiRowCard = powerbi.visuals.multiRowCardCapabilities;

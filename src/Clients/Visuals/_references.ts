@@ -56,6 +56,7 @@
 
 /// <reference path="capabilities/animatedNumber.capabilities.ts"/>
 /// <reference path="capabilities/basicShape.capabilities.ts"/>
+/// <reference path="capabilities/boxWhisker.capabilities.ts"/>
 /// <reference path="capabilities/columnChart.capabilities.ts"/>
 /// <reference path="capabilities/comboChart.capabilities.ts"/>
 /// <reference path="capabilities/donutChart.capabilities.ts"/>

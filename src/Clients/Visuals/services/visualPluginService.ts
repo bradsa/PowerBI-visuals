@@ -633,6 +633,7 @@ module powerbi.visuals {
                 // the visual convertion pane in visualization pane as well.
                 let convertibleVisualTypes = [
                     powerbi.visuals.plugins.barChart,
+                    powerbi.visuals.plugins.boxWhisker,
                     powerbi.visuals.plugins.columnChart,
                     powerbi.visuals.plugins.clusteredBarChart,
                     powerbi.visuals.plugins.clusteredColumnChart,

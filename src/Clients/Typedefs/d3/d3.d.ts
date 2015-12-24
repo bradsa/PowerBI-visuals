@@ -3402,3 +3402,49 @@ declare var d3: D3.Base;
 declare module "d3" {
     export = d3;
 }
+
+
+interface IBoxWhiskerData {
+    Label: string;
+    Q1: number;
+    Median: number;
+    Q3: number;
+    Minimum: number;
+    Maximum: number;
+    Mean: number;
+    LowWhisker: number;
+    HighWhisker: number;
+    NumDataPoints: number;
+    Points: number[];
+    Outliers: number[];
+    OutlierIndexes: number[];
+    OutlierObjects?: any[];
+}
+
+interface IBoxWhiskerPlot {
+    (): IBoxWhiskerPlot;
+    width(): number;
+    width(width: number): IBoxWhiskerPlot;
+    height(): number;
+    height(height: number): IBoxWhiskerPlot;
+    duration(): number;
+    duration(duration: number): IBoxWhiskerPlot;
+    domain(): number[];
+    domain(dom: number[]): IBoxWhiskerPlot;
+    range(): number[];
+    range(range: number[]): IBoxWhiskerPlot;
+    showLabels(): boolean;
+    showLabels(show: boolean): IBoxWhiskerPlot;
+    showDataPoints(): boolean;
+    showDataPoints(show: boolean): IBoxWhiskerPlot;
+    tickFormat(): (any) => string;
+    tickFormat(formatter: (value: any) => string): IBoxWhiskerPlot;
+    whiskers(computeWhiskers: (data: IBoxWhiskerData, index: number) => number[]): IBoxWhiskerPlot;
+}
+
+declare module D3 {
+    export interface Base {
+        box: IBoxWhiskerPlot;
+    }
+}
+

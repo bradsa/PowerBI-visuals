@@ -59,6 +59,13 @@ module powerbi.visuals.plugins {
         create: () => new BasicShapeVisual()
     };
 
+    export let boxWhisker: IVisualPlugin = {
+        name: 'boxWhisker',
+        watermarkKey: 'whisker',
+        capabilities: capabilities.boxWhisker,
+        create: () => new BoxWhisker(),
+    };
+    
     export let card: IVisualPlugin = {
         name: 'card',
         watermarkKey: 'card',
