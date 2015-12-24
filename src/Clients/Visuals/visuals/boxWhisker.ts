@@ -140,15 +140,22 @@ module powerbi.visuals {
         }
 
         public update(options: VisualUpdateOptions): void {
-
+            this.root.selectAll("svg").remove();
             if (options.dataViews.length === 0) { return; }
             this.dataView = options.dataViews[0];
 
             var categoryIndex = null;
       
+            var axisIndex = 0;
+            var valueIndex = 1;
+            if (options.dataViews[0].categorical && options.dataViews[0].categorical.categories[0].source.roles && options.dataViews[0].categorical.categories[0].source.roles["Values"]) {
+                axisIndex = 1;
+                valueIndex = 0;
+            }
+
             // we must have at least one row of values
             if (!options.dataViews[0].categorical.values &&
-                !(options.dataViews[0].categorical.categories[0].source.roles && options.dataViews[0].categorical.categories[0].source.roles["Values"])) {
+                !(options.dataViews[0].categorical.categories[valueIndex].source.roles && options.dataViews[0].categorical.categories[valueIndex].source.roles["Values"])) {
                 return;
             }
 
@@ -157,7 +164,7 @@ module powerbi.visuals {
                     if (col.source.roles && col.source.roles["Values"]) { // skip category creation when it's index 0
                         return;
                     } else {
-                        categoryIndex = 0;
+                        categoryIndex = axisIndex;
                     }
                 });
             }
@@ -166,7 +173,7 @@ module powerbi.visuals {
               
             var appendTo = this.root[0][0];
             var viewport = options.viewport;
-            this.root.selectAll("svg").remove();
+         
 
             var dataPoints: boolean = true;
             // options
