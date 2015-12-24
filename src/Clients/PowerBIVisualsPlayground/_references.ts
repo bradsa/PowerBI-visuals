@@ -38,6 +38,7 @@
 /// <reference path="sampleDataViews/SalesByDayOfWeekData.ts"/>
 /// <reference path="sampleDataViews/ServicesByUsers.ts"/>
 /// <reference path="sampleDataViews/SimpleAreaRangeData.ts"/>
+/// <reference path="sampleDataViews/SimpleBoxWhiskerData.ts"/>
 /// <reference path="sampleDataViews/SimpleDotPlotData.ts"/>
 /// <reference path="sampleDataViews/SimpleTimelineData.ts"/>
 /// <reference path="sampleDataViews/SimpleFunnelData.ts"/>

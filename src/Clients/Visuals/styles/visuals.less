@@ -499,6 +499,56 @@
     }
 }
 
+.boxWhisker .boxcontainer {
+  font-family: @regularFontFamily;
+}
+.boxWhisker .box {
+  font-size: 11px;
+}
+.boxWhisker .box line,
+.boxWhisker .box rect,
+.boxWhisker .box circle {
+  fill: white;
+  stroke: #000;
+  stroke-width: 1px;
+  cursor: pointer;
+}
+.boxWhisker .box .center {
+  cursor: pointer;
+}
+.boxWhisker .box .outlier {
+  fill: #FD625E;
+  stroke: #FD625E;
+  cursor: pointer;
+}
+.boxWhisker .box .mean {
+  fill: #01B8AA;
+  cursor: pointer;
+}
+.boxWhisker .box .datapoint {
+  fill: white;
+  stroke: #8AD4EB;
+  cursor: pointer;
+}
+.boxWhisker .axis {
+  fill: @neutralSecondaryAltColor;
+}
+.boxWhisker .axis path,
+.boxWhisker .axis line {
+  fill: none;
+  stroke: @neutralTertiaryColor;
+  shape-rendering: crispEdges;
+}
+.boxWhisker .x.axis path {
+  fill: none;
+  stroke: @neutralTertiaryColor;
+  shape-rendering: crispEdges;
+}
+.boxWhisker .box .goal line {
+  fill: none;
+  stroke: #E8D62E;
+}
+
 .funnelChart {
     line {
         shape-rendering: @defaultShapeRendering;
