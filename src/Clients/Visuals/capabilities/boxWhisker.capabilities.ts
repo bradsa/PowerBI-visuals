@@ -113,6 +113,4 @@ module powerbi.visuals {
         },
         suppressDefaultTitle: true,
     };
-
-
 }
