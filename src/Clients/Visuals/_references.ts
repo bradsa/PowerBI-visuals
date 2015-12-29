@@ -76,6 +76,7 @@
 /// <reference path="capabilities/slicer.capabilities.ts"/>
 /// <reference path="capabilities/table.capabilities.ts"/>
 /// <reference path="capabilities/matrix.capabilities.ts"/>
+/// <reference path="capabilities/sankeyBarchart.capabilities.ts"/>
 /// <reference path="capabilities/treemap.capabilities.ts"/>
 /// <reference path="capabilities/card.capabilities.ts"/>
 /// <reference path="capabilities/waterfallChart.capabilities.ts"/>
@@ -191,6 +192,7 @@
 /// <reference path="visuals/slicer.ts"/>
 /// <reference path="visuals/table.ts"/>
 /// <reference path="visuals/matrix.ts"/>
+/// <reference path="visuals/sankeyBarchart.ts"/>
 /// <reference path="visuals/treemap.ts"/>
 /// <reference path="visuals/card.ts"/>
 /// <reference path="visuals/owlGauge.ts"/>

@@ -80,6 +80,8 @@ module powerbi.visuals.capabilities {
 
     export let pieChart = powerbi.visuals.donutChartCapabilities;
 
+    export let sankeyBarchart = powerbi.visuals.sankeyBarchartCapabilities;
+
     export let scatterChart = powerbi.visuals.scatterChartCapabilities;
 
     export let table = powerbi.visuals.tableCapabilities;

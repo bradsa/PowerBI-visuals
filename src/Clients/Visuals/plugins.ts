@@ -232,6 +232,13 @@ module powerbi.visuals.plugins {
         create: () => new DonutChart({ sliceWidthRatio: 0 })
     };
 
+    export var sankeyBarchart: IVisualPlugin = {
+        name: 'sankeyBarchart',
+        watermarkKey: 'sankeyBarchart',
+        capabilities: capabilities.sankeyBarchart,
+        create: () => new SankeyBarchart()
+    };
+
     export let scatterChart: IVisualPlugin = {
         name: 'scatterChart',
         watermarkKey: 'scatterplot',

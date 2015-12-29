@@ -265,6 +265,9 @@ module powerbi.visuals {
                 sliceWidthRatio: 0,
                 tooltipsEnabled: tooltipsOnDashboard,
             }));
+            // SankeyBarchart
+            createPlugin(plugins, powerbi.visuals.plugins.sankeyBarchart, () => new SankeyBarchart()); 
+
             // Scatter Chart
             createPlugin(plugins, enablePivot(powerbi.visuals.plugins.scatterChart), () => new CartesianChart({
                 chartType: CartesianChartType.Scatter,
