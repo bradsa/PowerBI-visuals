@@ -120,7 +120,7 @@ module powerbi.visuals {
                         ticks: 4,
                         color: "#cccccc",
                         stroke: "#eeeeee",
-                        format: ",.0f"
+                        format: formatter
                     },
                     x: {
                         stroke: "#ddd",
@@ -373,5 +373,6 @@ module powerbi.visuals {
         public destroy(): void {
             this.root = null;
         }
+
     }
 }
