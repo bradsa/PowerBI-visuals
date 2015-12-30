@@ -46,6 +46,7 @@ module powerbi.visuals.sampleData {
             new sampleDataViews.SimpleFunnelData(),
             new sampleDataViews.SimpleGaugeData(),
             new sampleDataViews.SimpleMatrixData(),
+            new sampleDataViews.SimpleSankeyData(),
             new sampleDataViews.SimpleTableData(),
             new sampleDataViews.TeamScoreData(),
             new sampleDataViews.SimpleTreeData(),

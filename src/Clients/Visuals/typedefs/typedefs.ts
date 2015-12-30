@@ -25,6 +25,7 @@
  */
 
 ///<reference path="../../Typedefs/d3/d3.d.ts"/>
+///<reference path="../../Typedefs/d3/d3.plugin.sankey.d.ts" />
 ///<reference path="../../Typedefs/jquery-visible/jquery-visible.d.ts"/>
 ///<reference path="../../Typedefs/jquery/jquery.d.ts"/>
 ///<reference path="../../Typedefs/microsoftMaps/Microsoft.Maps.d.ts" />
