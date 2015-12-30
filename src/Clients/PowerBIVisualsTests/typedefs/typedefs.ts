@@ -26,6 +26,7 @@
 
 ///<reference path="../../Typedefs/globalize/globalize.d.ts"/>
 ///<reference path="../../Typedefs/d3/d3.d.ts"/>
+///<reference path="../../Typedefs/d3/d3.plugin.sankey.d.ts"/>
 ///<reference path="../../Typedefs/jasmine/jasmine-jquery.d.ts"/>
 ///<reference path="../../Typedefs/jasmine/jasmine.d.ts"/>
 ///<reference path="../../Typedefs/jquery/jquery.d.ts"/>

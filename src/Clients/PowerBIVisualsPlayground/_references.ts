@@ -43,6 +43,7 @@
 /// <reference path="sampleDataViews/SimpleFunnelData.ts"/>
 /// <reference path="sampleDataViews/SimpleGaugeData.ts"/>
 /// <reference path="sampleDataViews/SimpleMatrixData.ts"/>
+/// <reference path="sampleDataViews/SimpleSankeyData.ts"/>
 /// <reference path="sampleDataViews/SimpleTableData.ts"/>
 /// <reference path="sampleDataViews/TeamScoreData.ts"/>
 /// <reference path="sampleDataViews/calenderData.ts"/>

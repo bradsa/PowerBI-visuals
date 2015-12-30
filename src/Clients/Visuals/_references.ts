@@ -72,6 +72,7 @@
 /// <reference path="capabilities/multiRowCard.capabilities.ts"/>
 /// <reference path="capabilities/textbox.capabilities.ts"/>
 /// <reference path="capabilities/sampleVisual.capabilities.ts"/>
+/// <reference path="capabilities/sankey.capabilities.ts"/>
 /// <reference path="capabilities/scatterChart.capabilities.ts"/>
 /// <reference path="capabilities/slicer.capabilities.ts"/>
 /// <reference path="capabilities/table.capabilities.ts"/>
@@ -188,6 +189,7 @@
 /// <reference path="cartesian/scatterChart.ts"/>
 /// <reference path="cartesian/playChart.ts"/>
 
+/// <reference path="visuals/sankey.ts"/>
 /// <reference path="visuals/slicer.ts"/>
 /// <reference path="visuals/table.ts"/>
 /// <reference path="visuals/matrix.ts"/>

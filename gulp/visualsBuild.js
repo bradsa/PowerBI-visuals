@@ -73,6 +73,7 @@ var internalsPaths = [
 var externalsPath = [
     "src/Clients/Externals/ThirdPartyIP/JQuery/2.1.3/jquery.min.js",
     "src/Clients/Externals/ThirdPartyIP/D3/d3.min.js",
+    "src/Clients/Externals/ThirdPartyIP/D3/d3.plugin.sankey.js",
     "src/Clients/Externals/ThirdPartyIP/LoDash/lodash.min.js",
     "src/Clients/Externals/ThirdPartyIP/GlobalizeJS/globalize.min.js",
     "src/Clients/Externals/ThirdPartyIP/GlobalizeJS/globalize.culture.en-US.js",
@@ -408,7 +409,8 @@ module.exports.load = function (options) {
         return combine({
             src: [
             "src/Clients/Typedefs/jquery/jquery.d.ts",
-            "src/Clients/Typedefs/d3/d3.d.ts"],
+            "src/Clients/Typedefs/d3/d3.d.ts",
+            "src/Clients/Typedefs/d3/d3.plugin.sankey.d.ts"],
             name: "powerbi-externals.d.ts",
             destinationPath: "lib"
         });

@@ -266,6 +266,13 @@ module powerbi.visuals.plugins {
         getSortableRoles: (visualSortableOptions?: VisualSortableOptions) => Matrix.getSortableRoles(),
     };
 
+    export var sankey: IVisualPlugin = {
+        name: 'sankey',
+        watermarkKey: 'sankey',
+        capabilities: capabilities.sankey,
+        create: () => new Sankey()
+    };
+
     export let slicer: IVisualPlugin = {
         name: 'slicer',
         watermarkKey: 'slicer',

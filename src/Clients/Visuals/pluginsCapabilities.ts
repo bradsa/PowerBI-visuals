@@ -86,6 +86,8 @@ module powerbi.visuals.capabilities {
 
     export let matrix = powerbi.visuals.matrixCapabilities;
 
+    export let sankey = powerbi.visuals.sankeyCapabilities;
+
     export let slicer = powerbi.visuals.slicerCapabilities;
 
     export let textbox = powerbi.visuals.textboxCapabilities;
