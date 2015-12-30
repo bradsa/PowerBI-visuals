@@ -1,0 +1,21 @@
+os:
+  - osx
+  - linux
+language:
+  - cpp
+env:
+  - TRAVIS_NODE_VERSION="4.0"
+before_install:
+  # nvm is not yet supported on osx so we install it manually
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - PATH="`npm bin`:`npm bin -g`:$PATH"
+  - node --version
+  - npm install -g gulp
+ # - npm install phantomjs2 -g --phantomjs_downloadurl=https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+install:
+  - npm install
+script:
+ # - phantomjs --version
+  - gulp build
+notifications:
+  email: false

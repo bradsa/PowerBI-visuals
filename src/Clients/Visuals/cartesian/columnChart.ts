@@ -336,8 +336,7 @@ module powerbi.visuals {
             isScalar: boolean = false,
             dataViewMetadata: DataViewMetadata = null,
             chartType?: ColumnChartType,
-            interactivityService?: IInteractivityService
-        ): ColumnChartData {
+            interactivityService?: IInteractivityService): ColumnChartData {
             debug.assertValue(dataView, 'dataView');
             debug.assertValue(colors, 'colors');
 

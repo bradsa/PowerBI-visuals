@@ -26,7 +26,7 @@
  */
 var gulp = require('gulp'),
     runSequence = require("run-sequence");
-	
+
 require('./gulp/visualsTest.js');
 require('./gulp/visualsDownload.js');
 require('./gulp/visualsPlayground.js');
@@ -35,10 +35,14 @@ require('./gulp/visualsWatcher.js');
 require('./gulp/visualsPackage.js');
 require('./gulp/ghPages.js');
 require('./gulp/gulpHelp.js');
-	
-gulp.task("build", ["build:visuals"]);
 
-gulp.task("test", ["test:visuals"]);
+gulp.task("build", function(cb) {
+    runSequence("build:visuals", cb);
+});
+
+gulp.task("test",  function(cb) {
+    runSequence("test:visuals", cb);
+});
 
 gulp.task("run:test", ["run:test:visuals"]);
 

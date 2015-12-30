@@ -25,6 +25,7 @@
  */
 var gulp = require("gulp"),
     merge = require("merge2"),
+    path = require("path"),
     concat = require("gulp-concat"),
     sourcemaps = require("gulp-sourcemaps"),
     uglify = require("gulp-uglifyjs"),
@@ -104,13 +105,15 @@ module.exports.load = function (options) {
         combineExternalJs: combineExternalJs,
         combineVisualJsAll: combineVisualJsAll,
         buildVisualsTestsTs: buildVisualsTestsTs,
-		buildVisualsProject: buildVisualsProject,
-		buildVisualsScripts: buildVisualsScripts,
-		tslintVisuals: tslintVisuals
+        buildVisualsProject: buildVisualsProject,
+        buildVisualsScripts: buildVisualsScripts,
+        tslintVisuals: tslintVisuals,
+        buildCustomVisuals: buildCustomVisuals
     };
 
     function getBuildPaths(projectPath, outFileName, includePaths) {
-        var paths = [];
+        // include _references.ts first
+        var paths = [path.join(projectPath, "_references.ts")];
 
         if (includePaths && includePaths.length > 0) {
             paths = paths.concat(includePaths.map(function (path) {
@@ -217,23 +220,44 @@ module.exports.load = function (options) {
     }
 
     gulp.task("build:visuals:less", function () {
-        buildVisualsProjectLess();
+        return buildVisualsProjectLess(); 
     });
 
     function buildVisualsProjectLess() {
-        var css = gulp.src([
-                "src/Clients/Externals/ThirdPartyIP/jqueryui/1.11.4/jquery-ui.min.css",
-                "src/Clients/Visuals/styles/visuals.less"])
+        var source,
+            destination,
+            fileName = "visuals.css";
+
+        source = [
+            "src/Clients/Externals/ThirdPartyIP/jqueryui/1.11.4/jquery-ui.min.css",
+            "src/Clients/Visuals/styles/visuals.less"
+        ];
+
+        destination = [
+            "build/styles",
+            "src/Clients/PowerBIVisualsPlayground"
+        ];
+
+        return buildLess(source, destination, fileName);
+    }
+
+    function buildLess(sources, destinations, fileName) {
+        sources = [].concat(sources);
+        destinations = [].concat(destinations);
+
+        var css =  gulp.src(sources)
             .pipe(less({
                 modifyVars: { themeName: 'default' }
             }))
-            .pipe(concat("visuals.css"));
+            .pipe(concat(fileName));
+
         if (isRelease) {
             css = css.pipe(minifyCSS());
         }
 
-        return css.pipe(gulp.dest("build/styles"))
-            .pipe(gulp.dest("src/Clients/PowerBIVisualsPlayground"));
+        return merge(destinations.map(function (destination) {
+             return css.pipe(gulp.dest(destination))
+        }));
     }
 
     function buildVisualsScripts() {
@@ -305,20 +329,23 @@ module.exports.load = function (options) {
         "!src/Clients/PowerBIVisualsTests/**/*.d.ts",
         "src/Clients/PowerBIVisualsPlayground/**/*.ts",
         "!src/Clients/PowerBIVisualsPlayground*/obj/*.*",
-        "!src/Clients/PowerBIVisualsPlayground/**/*.d.ts"];
+        "!src/Clients/PowerBIVisualsPlayground/**/*.d.ts",
+        "src/Clients/CustomVisuals/**/*.ts",
+        "!src/Clients/CustomVisuals*/obj/*.*",
+        "!src/Clients/CustomVisuals/**/*.d.ts"];
 
     gulp.task("tslint:visuals", function () {
         return tslintVisuals();
     });
-	
-	function tslintVisuals() {
-		if (cliParser.cliOptions.noLint) {
-			return;
-		}			
-		return gulp.src(tslintPaths)
+
+    function tslintVisuals() {
+        if (cliParser.cliOptions.noLint) {
+            return;
+        }
+        return gulp.src(tslintPaths)
             .pipe(tslint())
             .pipe(tslint.report("verbose"));
-	}
+    }
 
 
     function copyInternalDependenciesVisualsPlayground() {
@@ -369,8 +396,62 @@ module.exports.load = function (options) {
             "build:visualsData",
             "build:visualsProject",
             "build:visuals:scripts",
+            "build:customVisuals",
             "build:visuals:playground",
             callback);
+    });
+
+    function buildCustomVisualsTS() {
+        return buildProject("src/Clients/CustomVisuals", "CustomVisuals");
+    }
+
+    function copyCustomVisualsJsFile() {
+        var scriptSrc = "src/Clients/CustomVisuals/obj/CustomVisuals.js",
+            playgroundFolder = "src/Clients/PowerBIVisualsPlayground";
+
+        return gulp.src(scriptSrc)
+            .pipe(gulp.dest("build/scripts"))
+            .pipe(gulp.dest(playgroundFolder));
+    }
+
+    gulp.task("build:customVisuals:ts", function () {
+        return visualsCommon.runScriptSequence([
+            buildCustomVisualsTS,
+            copyCustomVisualsJsFile
+        ]);
+    });
+
+    function buildCustomVisualsStyles() {
+        var fileName = "CustomVisuals.css",
+            sources,
+            destinations;
+
+        sources = [
+            "src/Clients/CustomVisuals/styles/styles.less",
+            "src/Clients/CustomVisuals/visuals/**/*.less"
+        ];
+
+        destinations = [
+            "build/styles",
+            "src/Clients/PowerBIVisualsPlayground"
+        ];
+
+        return buildLess(sources, destinations, fileName);
+    }
+
+    gulp.task("build:customVisuals:less", function () {
+        return buildCustomVisualsStyles();
+    });
+
+    function buildCustomVisuals() {
+        return visualsCommon.runScriptSequence([
+            buildCustomVisualsTS,
+            copyCustomVisualsJsFile,
+            buildCustomVisualsStyles]);
+    }
+
+    gulp.task("build:customVisuals", function () {
+        return buildCustomVisuals();
     });
 
     gulp.task("build:visuals:playground", function () {
@@ -396,9 +477,11 @@ module.exports.load = function (options) {
 
     function combineInternalDts() {
         return combine({
-            src: ["src/Clients/VisualsCommon/obj/VisualsCommon.d.ts",
-            "src/Clients/VisualsData/obj/VisualsData.d.ts",
-            "src/Clients/Visuals/obj/Visuals.d.ts"],
+            src: [
+                "src/Clients/VisualsCommon/obj/VisualsCommon.d.ts",
+                "src/Clients/VisualsData/obj/VisualsData.d.ts",
+                "src/Clients/Visuals/obj/Visuals.d.ts"
+            ],
             name: "powerbi-visuals.d.ts",
             destinationPath: "lib"
         });

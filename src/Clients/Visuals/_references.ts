@@ -65,8 +65,7 @@
 /// <reference path="capabilities/gauge.capabilities.ts"/>
 /// <reference path="capabilities/imageVisual.capabilities.ts"/>
 /// <reference path="capabilities/scriptVisual.capabilities.ts"/>
-/// <reference path="capabilities/samples/consoleWriter.capabilities.ts"/>
-/// <reference path="visuals/samples/consoleWriter.ts"/>
+
 /// <reference path="capabilities/lineChart.capabilities.ts"/>
 /// <reference path="capabilities/map.capabilities.ts"/>
 /// <reference path="capabilities/multiRowCard.capabilities.ts"/>
@@ -166,8 +165,6 @@
 /// <reference path="cartesian/columnChart.ts"/>
 /// <reference path="cartesian/columnChartClustered.ts"/>
 /// <reference path="cartesian/columnChartStacked.ts"/>
-/// <reference path="visuals/samples/helloIVisual.ts"/>
-/// <reference path="visuals/samples/asterPlot.ts"/>
 
 /// <reference path="cartesian/comboChart.ts"/>
 
@@ -196,29 +193,11 @@
 /// <reference path="visuals/treemap.ts"/>
 /// <reference path="visuals/card.ts"/>
 /// <reference path="visuals/owlGauge.ts"/>
-/// <reference path="visuals/samples/streamGraph.ts"/>
-/// <reference path="visuals/samples/sunburst.ts"/>
-/// <reference path="visuals/samples/radarChart.ts"/>
-/// <reference path="visuals/samples/dotPlot.ts"/>
-/// <reference path="visuals/samples/timeline.ts"/>
-/// <reference path="visuals/samples/areaRangeChart.ts"/>
-/// <reference path="visuals/samples/chicletSlicer.ts"/>
-
 /// <reference path="warnings/visualWarnings.ts"/>
 /// <reference path="cartesian/waterfallChart.ts"/>
-
-/// <reference path="visuals/samples/tornadoChart.ts" />
-
 /// <reference path="tooltip.ts"/>
-
 /// <reference path="styles/visualStyles.ts"/>
-
 /// <reference path="visuals/donutChart.ts"/>
-
-/// <reference path="visuals/samples/histogram.ts"/>
-
 /// <reference path="visuals/scriptVisual.ts"/>
 
-/// <reference path="visuals/samples/sankeyDiagram.ts"/>
-/// <reference path="visuals/samples/wordCloud.ts"/>
 /// <reference path="plugins.ts"/>
