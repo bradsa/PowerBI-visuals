@@ -36,9 +36,6 @@
         "q": "^1.4.1",
         "stream-consume": "^0.1.0"
     },
-    "scripts": {
-        "preinstall": "npm install -g gulp"
-    },
     "author": "Microsoft PowerBI Visuals",
     "license": "MIT",
     "repository": {

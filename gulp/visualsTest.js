@@ -32,35 +32,39 @@ var gulp = require("gulp"),
     cliParser = require("./cliParser.js"),
     visualsCommon = require("./visualsCommon.js"),
     visualsBuildDebug = require("./visualsBuild.js").load(),
-	visualsBuildRelease = require("./visualsBuild.js").load({isRelease: true}),
+    visualsBuildRelease = require("./visualsBuild.js").load({ isRelease: true }),
     visualsDownload = require("./visualsDownload.js");
-
 
 var openInBrowser = Boolean(cliParser.cliOptions.openInBrowser);
 
 var filesOption = common.getOptionFromCli(cliParser.cliOptions.files);
 
-function copyInternalDependencies () {
+function copyInternalDependencies() {
     return gulp.src([
         "src/Clients/PowerBIVisualsTests/obj/PowerBIVisualsTests.js"])
         .pipe(rename("powerbi-visuals-tests.js"))
         .pipe(gulp.dest("VisualsTests"));
 }
 
-function copyExternalDependencies () {
+function copyExternalDependencies() {
     return gulp.src([
         "build/styles/visuals.css",
         "build/scripts/powerbi-visuals.all.js",
+
+        "build/styles/CustomVisuals.css",
+        "build/scripts/CustomVisuals.js",
+
         "src/Clients/externals/ThirdPartyIP/JasmineJQuery/jasmine-jquery.js",
         "src/Clients/externals/ThirdPartyIP/MomentJS/moment.min.js",
         "src/Clients/externals/ThirdPartyIP/Velocity/velocity.min.js",
         "src/Clients/externals/ThirdPartyIP/Velocity/velocity.ui.min.js",
         "src/Clients/externals/ThirdPartyIP/QuillJS/quill.min.js",
+
         "node_modules/jasmine-core/lib/jasmine-core/jasmine.js",
         "node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js",
         "node_modules/jasmine-core/lib/jasmine-core/boot.js",
-        "node_modules/jasmine-core/lib/jasmine-core/jasmine.css"])
-        .pipe(gulp.dest("VisualsTests"));
+        "node_modules/jasmine-core/lib/jasmine-core/jasmine.css"
+    ]).pipe(gulp.dest("VisualsTests"));
 }
 
 function addLink(link) {
@@ -74,7 +78,7 @@ function addScript(script) {
 function addPaths(paths) {
     var cssExtension = /.+\.css/,
         jsExtension = /.+\.js/;
-    
+
     return (paths.map(function (path) {
         if (jsExtension.test(path)) {
             return addScript(path);
@@ -99,7 +103,7 @@ function createHtmlTestRunner(fileName, paths, testName) {
     var html = "<!DOCTYPE html><html>",
         head =
             "<head>" +
-            '<meta charset="utf-8">' + 
+            '<meta charset="utf-8">' +
             "<title>Jasmine Spec Runner</title>" +
             addPaths(paths) +
             addTestName(testName) + "</head>",
@@ -114,13 +118,15 @@ gulp.task("run:test:visuals", function (callback) {
     return runTestVisuals(callback);
 });
 
-function runTestVisuals (callback) {
+function runTestVisuals(callback) {
     var testFolder = "VisualsTests",
         specRunnerFileName = "runner.html",
         specRunnerPath = testFolder + "/" + specRunnerFileName,
         src = [
             "visuals.css",
+            "CustomVisuals.css",
             "powerbi-visuals.all.js",
+            "CustomVisuals.js",
             "jasmine-jquery.js",
             "velocity.min.js",
             "velocity.ui.min.js",
@@ -139,7 +145,7 @@ function runTestVisuals (callback) {
         specRunnerPath,
         jasminePaths.concat(src),
         common.getOptionFromCli(openInBrowser)[0]
-    );
+        );
 
     if (openInBrowser) {
         visualsCommon.runHttpServer({
@@ -148,8 +154,8 @@ function runTestVisuals (callback) {
             index: specRunnerFileName
         }, callback);
     } else {
-        return gulp.src(src, {cwd: testFolder})
-            .pipe(jasmineBrowser.specRunner({console: true}))
+        return gulp.src(src, { cwd: testFolder })
+            .pipe(jasmineBrowser.specRunner({ console: true }))
             .pipe(jasmineBrowser.headless());
     }
 }
@@ -160,48 +166,50 @@ gulp.task("test:visuals:performance", function (callback) {
 });
 
 gulp.task("test:visuals", function (callback) {
-   testVisuals(callback);
+    testVisuals(callback);
 });
 
 function testVisuals(callback) {
-	return visualsCommon.runScriptSequence([
-		buildVisuals,
-		buildVisualsTests,
+    return visualsCommon.runScriptSequence([
+        buildVisuals,
+        buildVisualsTests,
         runTestVisuals,
-		callback
+        callback
     ]);
 }
 
 function buildVisuals() {
-	var isDebug = Boolean(cliParser.cliOptions.debug);
-	var buildingVisualsLog = function() {
-		console.log('Building visuals...');
-	};
-	if (isDebug) {
-		return visualsCommon.runScriptSequence([
-			buildingVisualsLog,
-			visualsBuildDebug.buildVisualsCommon,
-			visualsBuildDebug.buildVisualsData,
-			visualsBuildDebug.buildVisualsProject,
-			visualsBuildDebug.buildVisualsScripts
-		]);
-	}
-	else {
-		var tsLintLog = function() {
-			if (!cliParser.cliOptions.noLint) {
-				console.log('Linting TypeScript...');
-			}
-		};
-		return visualsCommon.runScriptSequence([
-			tsLintLog,
-			visualsBuildRelease.tslintVisuals,
-			buildingVisualsLog,
-			visualsBuildRelease.buildVisualsCommon,
-			visualsBuildRelease.buildVisualsData,
-			visualsBuildRelease.buildVisualsProject,
-			visualsBuildRelease.buildVisualsScripts
-		]);
-	}	 
+    var isDebug = Boolean(cliParser.cliOptions.debug);
+    var buildingVisualsLog = function () {
+        console.log('Building visuals...');
+    };
+    if (isDebug) {
+        return visualsCommon.runScriptSequence([
+            buildingVisualsLog,
+            visualsBuildDebug.buildVisualsCommon,
+            visualsBuildDebug.buildVisualsData,
+            visualsBuildDebug.buildVisualsProject,
+            visualsBuildDebug.buildVisualsScripts,
+            visualsBuildDebug.buildCustomVisuals
+        ]);
+    }
+    else {
+        var tsLintLog = function () {
+            if (!cliParser.cliOptions.noLint) {
+                console.log('Linting TypeScript...');
+            }
+        };
+        return visualsCommon.runScriptSequence([
+            tsLintLog,
+            visualsBuildRelease.tslintVisuals,
+            buildingVisualsLog,
+            visualsBuildRelease.buildVisualsCommon,
+            visualsBuildRelease.buildVisualsData,
+            visualsBuildRelease.buildVisualsProject,
+            visualsBuildRelease.buildVisualsScripts,
+            visualsBuildRelease.buildCustomVisuals,
+        ]);
+    }
 }
 
 gulp.task("build:visualsTests", function () {
@@ -209,11 +217,11 @@ gulp.task("build:visualsTests", function () {
 });
 
 function buildVisualsTests() {
-	// by default, tests are build in release mode
-	// but if debug flag exists, then we have to build in debug mode
-	var isDebug = Boolean(cliParser.cliOptions.debug);
-	var tsBuildMode = isDebug ? visualsBuildDebug : visualsBuildRelease;
-    return visualsCommon.runScriptSequence([		
+    // by default, tests are build in release mode
+    // but if debug flag exists, then we have to build in debug mode
+    var isDebug = Boolean(cliParser.cliOptions.debug);
+    var tsBuildMode = isDebug ? visualsBuildDebug : visualsBuildRelease;
+    return visualsCommon.runScriptSequence([
         tsBuildMode.buildVisualsTestsTs,
         visualsDownload.installJasmine,
         visualsDownload.installPhantomjs,
@@ -224,8 +232,6 @@ function buildVisualsTests() {
 }
 
 gulp.task("open:test:visuals", function (callback) {
-    openInBrowser = true;    
+    openInBrowser = true;
     testVisuals(callback);
 });
-
-

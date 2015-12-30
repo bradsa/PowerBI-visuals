@@ -31,12 +31,18 @@ var gulp = require("gulp"),
     visualsBuildDefault = visualsBuild.load();
 
 var lessFilesToWatch = [
-        "src/Clients/Externals/ThirdPartyIP/jqueryui/1.11.4/jquery-ui.min.css",
-        "src/Clients/Visuals/styles/*.less",
-        "src/Clients/StyleLibrary/less/*.less",
-        "src/Clients/PowerBI/styles/*.less",
-        "src/Clients/Visuals/images/visuals.sprites.png",
-        "src/Clients/Visuals/styles/sprites.less"];
+    "src/Clients/Externals/ThirdPartyIP/jqueryui/1.11.4/jquery-ui.min.css",
+    "src/Clients/Visuals/styles/*.less",
+    "src/Clients/StyleLibrary/less/*.less",
+    "src/Clients/PowerBI/styles/*.less",
+    "src/Clients/Visuals/images/visuals.sprites.png",
+    "src/Clients/Visuals/styles/sprites.less"
+];
+
+var customVisualsLessFilesToWatch = [
+    "src/Clients/CustomVisuals/styles/styles.less",
+    "src/Clients/CustomVisuals/visuals/**/*.less"
+];
 
 var lintErrors = false;
 var lintReporter = function (output, file, options) {
@@ -71,6 +77,10 @@ gulp.task("start:watchers", function (callback) {
         "Visuals",
         "build:visualsProject:ts");
     watchProjectBuild(
+        "src/Clients/CustomVisuals",
+        "CustomVisuals",
+        "build:customVisuals:ts");
+    watchProjectBuild(
         "src/Clients/PowerBIVisualsPlayground",
         "PowerBIVisualsPlayground",
         "build:visuals:playground",
@@ -78,6 +88,7 @@ gulp.task("start:watchers", function (callback) {
 
     watchProjectFiles("src/Clients/Visuals/images/sprite-src/*.png", "build:visuals:sprite");
     watchProjectFiles(lessFilesToWatch, "build:visuals:less", waitingMessageLog);
+    watchProjectFiles(customVisualsLessFilesToWatch, "build:customVisuals:less", waitingMessageLog);
     watchProjectFiles(visualsBuildDefault.externalsPath, "combine:visuals:externalJs", waitingMessageLog);
     watchProjectFiles(visualsBuildDefault.internalsPaths, "combine:visuals:internalJs", waitingMessageLog);
 

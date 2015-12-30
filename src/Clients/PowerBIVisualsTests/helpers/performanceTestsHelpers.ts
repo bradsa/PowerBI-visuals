@@ -552,6 +552,8 @@ module powerbitests.performanceTestsHelpers {
         switch (visualsType) {
             case "donutChart":
             case "pieChart":
+            case "enhancedScatterChart":
+            case "wordCloud":
                 return 100;
             default:
                 return 6;

@@ -36,6 +36,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
+  - npm install -g gulp
   - npm install
 
 build_script:

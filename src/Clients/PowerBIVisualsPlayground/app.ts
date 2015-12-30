@@ -146,7 +146,8 @@ module powerbi.visuals {
                     visual.name === "playChart" ||
                     visual.name === "kpi" ||
                     visual.name === "scriptVisual" ||
-                    visual.name === "slicer") continue;
+                    visual.name === "slicer" ||
+                    visual.name === "bulletChart") continue;
                 typeSelect.append('<option value="' + visual.name + '">' + visual.name + '</option>');
             }
 
