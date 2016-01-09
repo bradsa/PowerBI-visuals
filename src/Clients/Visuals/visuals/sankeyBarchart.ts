@@ -201,7 +201,7 @@ module powerbi.visuals {
             // SVG
             var svg = d3.select(this.root[0][0])
                 .append("svg")
-                .attr("width", vizWidth);
+                .attr("width", Math.max(0, vizWidth));
 
             // BARCHART FOOTER
             var footer = d3.select(this.root[0][0])
@@ -234,7 +234,7 @@ module powerbi.visuals {
                 });
 
             vizHeight = vizHeight - footer[0].parentNode.clientHeight;
-            svg.attr("height", vizHeight);
+            svg.attr("height", Math.max(0, vizHeight));
 
             // XAXIS
             var lines = svg.append("g")
@@ -331,9 +331,9 @@ module powerbi.visuals {
                 .attr("y", function (d) {
                     return (vizHeight - bar_height_fx(d.enter.value));
                 })
-                .attr("width", xaxis_range_gap.rangeBand())
+                .attr("width", Math.max(0, xaxis_range_gap.rangeBand()))
                 .attr("height", function (d) {
-                    return bar_height_fx(d.enter.value);
+                    return Math.max(0, bar_height_fx(d.enter.value));
                 })
                 .attr("fill", function (d) {
                     return d.color;
@@ -369,6 +369,7 @@ module powerbi.visuals {
                 .style("opacity", sankeyBarchartOptions.sankey.opacity);
 
         }
+
 
         public destroy(): void {
             this.root = null;
