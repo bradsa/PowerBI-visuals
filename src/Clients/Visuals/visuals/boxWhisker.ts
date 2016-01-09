@@ -148,14 +148,29 @@ module powerbi.visuals {
       
             var axisIndex = 0;
             var valueIndex = 1;
-            if (options.dataViews[0].categorical && options.dataViews[0].categorical.categories[0].source.roles && options.dataViews[0].categorical.categories[0].source.roles["Values"]) {
+            if (options.dataViews[0].categorical &&
+                options.dataViews[0].categorical.categories &&
+                options.dataViews[0].categorical.categories.length > 0 &&
+                options.dataViews[0].categorical.categories[0] &&
+                options.dataViews[0].categorical.categories[0].source &&
+                options.dataViews[0].categorical.categories[0].source.roles &&
+                options.dataViews[0].categorical.categories[0].source.roles["Values"]) {
                 axisIndex = 1;
                 valueIndex = 0;
             }
 
             // we must have at least one row of values
-            if (!options.dataViews[0].categorical.values &&
-                !(options.dataViews[0].categorical.categories[valueIndex].source.roles && options.dataViews[0].categorical.categories[valueIndex].source.roles["Values"])) {
+            if (!options.dataViews[0].categorical ||
+                (!options.dataViews[0].categorical.values &&
+                !(options.dataViews[0].categorical &&
+                options.dataViews[0].categorical.categories &&
+                options.dataViews[0].categorical[valueIndex] &&
+                options.dataViews[0].categorical[valueIndex].source &&
+                        options.dataViews[0].categorical.categories[valueIndex].source.roles &&
+                        options.dataViews[0].categorical.categories[valueIndex].source.roles["Values"])))
+
+
+            {
                 return;
             }
 
@@ -192,6 +207,7 @@ module powerbi.visuals {
             var baseCategoryData = null;
             if (categoryIndex !== null && this.dataView.categorical.values) {
                 baseCategoryData = this.dataView.categorical.values;
+
             }
             else if (categoryIndex != null && this.dataView.categorical.values === undefined) {
                 var categoryCol = this.dataView.categorical.categories[categoryIndex];
@@ -205,6 +221,9 @@ module powerbi.visuals {
                         }
                         categoryData[categoryCol.values[x]].push(this.dataView.categorical.categories[k].values[x]);
                     }
+                    if (this.dataView.categorical.categories[x].source.format) {
+                        valueFormat = this.dataView.categorical.categories[x].source.format;
+                    }
                 }
 
                 baseCategoryData = [];
@@ -212,17 +231,10 @@ module powerbi.visuals {
                 Object.keys(categoryData).forEach(function (key) {
                     baseCategoryData.push({ 'values': categoryData[key], 'name': key });
                 });
-
             } else {
                 baseCategoryData = this.dataView.categorical.categories;
             }
-            for (var k = 0; k < this.dataView.categorical.categories.length; k++) {
-                if (k === categoryIndex) { continue; }
-                if (this.dataView.categorical.categories[k].source.format) {
-                    valueFormat = this.dataView.categorical.categories[k].source.format;
-                }
-            }
-
+            
             baseCategoryData.forEach(function (categoryValues, index) {
 
                 var values = categoryValues.values.sort(d3.ascending);
