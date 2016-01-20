@@ -145,7 +145,7 @@ module powerbi.visuals {
             this.dataView = options.dataViews[0];
 
             var categoryIndex = null;
-      
+
             var axisIndex = 0;
             var valueIndex = 1;
             if (options.dataViews[0].categorical &&
@@ -162,15 +162,12 @@ module powerbi.visuals {
             // we must have at least one row of values
             if (!options.dataViews[0].categorical ||
                 (!options.dataViews[0].categorical.values &&
-                !(options.dataViews[0].categorical &&
-                options.dataViews[0].categorical.categories &&
-                options.dataViews[0].categorical[valueIndex] &&
-                options.dataViews[0].categorical[valueIndex].source &&
+                    !(options.dataViews[0].categorical &&
+                        options.dataViews[0].categorical.categories &&
+                        options.dataViews[0].categorical.categories[valueIndex] &&
+                        options.dataViews[0].categorical.categories[valueIndex].source &&
                         options.dataViews[0].categorical.categories[valueIndex].source.roles &&
-                        options.dataViews[0].categorical.categories[valueIndex].source.roles["Values"])))
-
-
-            {
+                        options.dataViews[0].categorical.categories[valueIndex].source.roles["Values"]))) {
                 return;
             }
 
@@ -188,7 +185,6 @@ module powerbi.visuals {
               
             var appendTo = this.root[0][0];
             var viewport = options.viewport;
-         
 
             var dataPoints: boolean = true;
             // options
@@ -221,8 +217,8 @@ module powerbi.visuals {
                         }
                         categoryData[categoryCol.values[x]].push(this.dataView.categorical.categories[k].values[x]);
                     }
-                    if (this.dataView.categorical.categories[x].source.format) {
-                        valueFormat = this.dataView.categorical.categories[x].source.format;
+                    if (this.dataView.categorical.categories[k].source.format) {
+                        valueFormat = this.dataView.categorical.categories[k].source.format;
                     }
                 }
 
@@ -232,10 +228,22 @@ module powerbi.visuals {
                     baseCategoryData.push({ 'values': categoryData[key], 'name': key });
                 });
             } else {
+                if (this.dataView.categorical.categories === undefined) {
+                    return;
+                }
                 baseCategoryData = this.dataView.categorical.categories;
+                valueFormat = this.dataView.categorical.categories[0].source.format;
             }
-            
+            var nan = false;
             baseCategoryData.forEach(function (categoryValues, index) {
+                // make sure all the data are parseable numbers
+                categoryValues.values.forEach(function (value) {
+                    if (isNaN(value)) {
+                        nan = true;
+                        return;
+                    };
+                });
+                if (nan) { return; }
 
                 var values = categoryValues.values.sort(d3.ascending);
                 var outliers = [];
@@ -263,11 +271,21 @@ module powerbi.visuals {
                 } else {
                     labelName = categoryValues["name"];
                 }
+                var med = d3.median(values);
+                if (valueFormat === undefined) {
 
+                    if (med.toString.length > 10) {
+                        med = Math.round(med * 10) / 10;
+                        lowWhisker = Math.round(lowWhisker * 10) / 10;
+                        highWhisker = Math.round(highWhisker * 10) / 10;
+                    } else {
+                        valueFormat = "0";
+                    }
+                }
                 var bwData = {
                     Label: labelName,
                     Q1: q1,
-                    Median: d3.median(values),
+                    Median: med,
                     Q3: q2,
                     Minimum: parseInt(d3.min(values).toString(), null),
                     Maximum: parseInt(d3.max(values).toString(), null),
@@ -283,7 +301,9 @@ module powerbi.visuals {
                 pData.push(bwData);
 
             });
-
+            if (nan) {
+                return; // our dataset has non numerical data 
+            }
             var plotData =
                 {
                     Title: title, XAxisTitle: XAxisTitle, YAxisTitle: YAxisTitle,
@@ -291,13 +311,16 @@ module powerbi.visuals {
                     Goal: null
                 };
 
-            var margin = { top: 10, right: 50, bottom: 70, left: 70 },
-                w = Math.max(30, viewport.width - margin.left - margin.right),
-                h = Math.max(30, viewport.height - margin.top - margin.bottom);
+            var margin = { top: 5, right: 5, bottom: 40, left: 60 },
+                h = Math.max(100, viewport.height - margin.top - margin.bottom);
 
             var pdata = plotData.PlotData;
             var scaleData = this.createPlotAndAxesScales(plotData, h, margin.top);
             var formatter = valueFormatter.create({ format: valueFormat });
+            margin.left = 50 + scaleData["boxRange"][1].toString.length * 5;
+            var topLen = scaleData["boxRange"][1].toString.length * 20; // how many chars in the longest val
+            var minWidth = (100 + topLen) * pData.length;
+            var w = Math.max(minWidth, viewport.width - margin.left - margin.right);
 
             var chart = d3.box()
                 .height(h)
@@ -351,9 +374,10 @@ module powerbi.visuals {
             var outliers = svg.selectAll("circle.outlier");
             // Add Power BI tooltip info   
             TooltipManager.addTooltip(outliers, (tooltipEvent: TooltipEvent) => {
+                var displayName = tooltipEvent.context.parentNode.attributes["data"].value;
                 return [
                     {
-                        displayName: '',
+                        displayName: displayName,
                         value: formatter.format(tooltipEvent.data),
                     }
                 ];
@@ -362,9 +386,10 @@ module powerbi.visuals {
             var datapoints = svg.selectAll("circle.datapoint");
             // Add Power BI tooltip info   
             TooltipManager.addTooltip(datapoints, (tooltipEvent: TooltipEvent) => {
+                var displayName = tooltipEvent.context.parentNode.attributes["data"].value;
                 return [
                     {
-                        displayName: '',
+                        displayName: displayName,
                         value: formatter.format(tooltipEvent.data),
                     }
                 ];
@@ -396,46 +421,56 @@ module powerbi.visuals {
             }, true);
 
             var meanPoint = svg.selectAll("circle.mean");
+            // meanPoint.text((data => {
+            //     if (valueFormat == undefined) {
+            //         valueFormat = "0";
+            //     }
+            //     var txt = visuals.valueFormatter.create({ format: valueFormat }).format(data);
+            //     return txt;
+            // }));
             // Add Power BI tooltip info   
             TooltipManager.addTooltip(meanPoint, (tooltipEvent: TooltipEvent) => {
                 return [
                     {
                         displayName: 'Mean',
-                        value: formatter.format(tooltipEvent.data),
+                        value: valueFormatter.create({ format: valueFormat }).format(tooltipEvent.data),
                     }
                 ];
             }, true);
 
             var whiskerTick = svg.selectAll("text.whisker");
+            
+            
             // Add Power BI tooltip info   
             TooltipManager.addTooltip(whiskerTick, (tooltipEvent: TooltipEvent) => {
                 var quartileString = '';
                 if (tooltipEvent.index % 2 === 0) {
-                    quartileString = addOrd(highWhiskerQuantile * 100);
+                    quartileString = addOrd(lowWhiskerQuantile * 100);
                 } else {
                     quartileString = addOrd(highWhiskerQuantile * 100);
                 }
                 return [
                     {
                         displayName: quartileString + " quantile",
-                        value: formatter.format(tooltipEvent.data),
+                        value: valueFormatter.create({ format: valueFormat }).format(tooltipEvent.data),
                     }
                 ];
             }, true);
 
             var whiskerTick = svg.selectAll("line.whisker");
+          
             // Add Power BI tooltip info   
             TooltipManager.addTooltip(whiskerTick, (tooltipEvent: TooltipEvent) => {
                 var quartileString = '';
                 if (tooltipEvent.index % 2 === 0) {
-                    quartileString = addOrd(highWhiskerQuantile * 100);
+                    quartileString = addOrd(lowWhiskerQuantile * 100);
                 } else {
                     quartileString = addOrd(highWhiskerQuantile * 100);
                 }
                 return [
                     {
                         displayName: quartileString + " quantile",
-                        value: formatter.format(tooltipEvent.data),
+                        value: valueFormatter.create({ format: valueFormat }).format(tooltipEvent.data),
                     }
                 ];
             }, true);
