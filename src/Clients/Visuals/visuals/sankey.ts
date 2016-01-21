@@ -203,8 +203,8 @@ module powerbi.visuals {
                 }
 
                 graph.links.push({
-                    source: nodes.indexOf(value.source),
-                    target: nodes.indexOf(value.target),
+                    source: nodes.indexOf(value.source.toString()),
+                    target: nodes.indexOf(value.target.toString()),
                     value: value.value,
                     name: linkLabel
                 });
