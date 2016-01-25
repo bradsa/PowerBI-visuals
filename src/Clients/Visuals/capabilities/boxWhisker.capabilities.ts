@@ -44,28 +44,6 @@ module powerbi.visuals {
             },
 
         ],
-
-        dataViewMappings: [
-            {
-                conditions: [
-                    { 'Category': { max: 1 }, 'Values': { min: 0 } },
-                ],
-                categorical: {
-                    categories: {
-                        for: { in: "Category" },
-                        dataReductionAlgorithm: { top: {} }
-                    },
-                    values: {
-                        group: {
-                            by: 'Series',
-                            select: [{ for: { in: 'Values' } }, { bind: { to: 'Category' } }],
-                            dataReductionAlgorithm: { top: {} }
-                        }
-                    },
-                    rowCount: { preferred: { min: 2 }, supported: { min: 2 } }
-                },
-            }
-        ],
         objects: {
             general: {
                 displayName: data.createDisplayNameGetter('Visual_General'),
@@ -111,6 +89,28 @@ module powerbi.visuals {
                 },
             },
         },
+        dataViewMappings: [
+
+            {
+                conditions: [
+                    { 'Category': { max: 1 }, 'Values': { min: 0 } },
+                ],
+                categorical: {
+                    categories: {
+                        for: { in: "Category" },
+                        dataReductionAlgorithm: { top: {} }
+                    },
+                    values: {
+                        group: {
+                            by: 'Series',
+                            select: [{ for: { in: 'Values' } }, { bind: { to: 'Category' } }],
+                        }
+
+                    },
+                    rowCount: { preferred: { min: 2 }, supported: { min: 2 } }
+                },
+            }
+        ],
         suppressDefaultTitle: true,
     };
 }

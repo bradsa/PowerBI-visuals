@@ -105,6 +105,7 @@ module powerbi.visuals {
         private root: D3.Selection;
         private dataView: DataView;
         private colors: IDataColorPalette;
+        private hostService: IVisualHostServices;
 
         private static properties = {
             q1: { objectName: 'box', propertyName: 'q1' },
@@ -137,10 +138,10 @@ module powerbi.visuals {
         public init(options: VisualInitOptions) {
             this.root = d3.select(options.element.get(0));
             this.colors = options.style.colorPalette.dataColors;
+            this.hostService = options.host;
         }
-
         public update(options: VisualUpdateOptions): void {
-            this.root.selectAll("svg").remove();
+            this.root.selectAll("div").remove();
             if (options.dataViews.length === 0) { return; }
             this.dataView = options.dataViews[0];
 
@@ -184,6 +185,7 @@ module powerbi.visuals {
             // check that we have the correct data
               
             var appendTo = this.root[0][0];
+
             var viewport = options.viewport;
 
             var dataPoints: boolean = true;
@@ -199,6 +201,26 @@ module powerbi.visuals {
             var highWhiskerQuantile = this.getQ4(this.dataView);
             var valueFormat = "0";
             var pData: BoxWhiskerData[] = [];
+
+            if (lowWhiskerQuantile < 0 || lowWhiskerQuantile > 1 || lowWhiskerQuantile > q1quantile
+                || q1quantile < 0 || q1quantile > 1 || q1quantile > q2quantile
+                || q2quantile < 0 || q2quantile > 1 || q2quantile > highWhiskerQuantile
+                || highWhiskerQuantile < 0 || highWhiskerQuantile > 1
+                || highWhiskerQuantile < 0 || highWhiskerQuantile > 1
+            ) {
+                var visualMessage: IVisualErrorMessage = {
+                    message: 'Quantiles need to be between 0 and 1 and in increasing order from 1st to 4th',
+                    title: 'Invalid Quantile Multiplier',
+                    detail: '',
+                };
+                var warning: IVisualWarning = {
+                    code: 'UnexpectedValueType',
+                    getMessages: () => visualMessage,
+                };
+                this.hostService.setWarnings([warning]);
+
+                return;
+            }
 
             var baseCategoryData = null;
             if (categoryIndex !== null && this.dataView.categorical.values) {
@@ -312,7 +334,7 @@ module powerbi.visuals {
                 };
 
             var margin = { top: 5, right: 5, bottom: 40, left: 60 },
-                h = Math.max(100, viewport.height - margin.top - margin.bottom);
+                h = Math.max(100, viewport.height - margin.top - margin.bottom - 8); // 8 for scrollbar
 
             var pdata = plotData.PlotData;
             var scaleData = this.createPlotAndAxesScales(plotData, h, margin.top);
@@ -331,8 +353,14 @@ module powerbi.visuals {
                 .showDataPoints(dataPoints)
                 .tickFormat(formatter.format);
 
+            //d3.select(appendTo.parentNode).attr("class", "boxWhisker visual ng-isolate-scope");
+            if (d3.select(appendTo.parentNode).attr("class").indexOf("boxWhiskerScroll") < 0) {
+                d3.select(appendTo.parentNode).attr("class", d3.select(appendTo.parentNode).attr("class") + " boxWhiskerScroll");
+            }
+
             var svg = d3.select(appendTo)
-                .append("div").attr("class", "boxWhisker")
+                .attr("class", "boxWhisker")
+                .append("div")
                 .append("svg")
                 .attr("width", w + margin.left + margin.right)
                 .attr("height", h + margin.top + margin.bottom)
@@ -340,6 +368,7 @@ module powerbi.visuals {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+                
             // the x-axis
             var xaxisScale = d3.scale.ordinal()
                 .domain(pdata.map(function (d) { return d.Label; }))
