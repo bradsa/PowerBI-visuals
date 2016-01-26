@@ -142,6 +142,7 @@ module powerbi.visuals {
         }
         public update(options: VisualUpdateOptions): void {
             this.root.selectAll("div").remove();
+            this.hostService.setWarnings(null);
             if (options.dataViews.length === 0) { return; }
             this.dataView = options.dataViews[0];
 
@@ -294,9 +295,16 @@ module powerbi.visuals {
                     labelName = categoryValues["name"];
                 }
                 var med = d3.median(values);
+                var average = d3.mean(values);
                 if (valueFormat === undefined) {
-
-                    if (med.toString.length > 10) {
+                    if (med < 1000 || highWhisker - lowWhisker < 100) {
+                        average = Number(average.toFixed(2));
+                        med = Number(med.toFixed(2));
+                        lowWhisker = Number(lowWhisker.toFixed(2));
+                        highWhisker = Number(highWhisker.toFixed(2));
+                    }
+                    else if (med.toString.length > 10) {
+                        average = Math.round(average * 10) / 10;
                         med = Math.round(med * 10) / 10;
                         lowWhisker = Math.round(lowWhisker * 10) / 10;
                         highWhisker = Math.round(highWhisker * 10) / 10;
@@ -311,7 +319,7 @@ module powerbi.visuals {
                     Q3: q2,
                     Minimum: parseInt(d3.min(values).toString(), null),
                     Maximum: parseInt(d3.max(values).toString(), null),
-                    Mean: d3.mean(values),
+                    Mean: average,
                     LowWhisker: lowWhisker,
                     HighWhisker: highWhisker,
                     NumDataPoints: values.length,
